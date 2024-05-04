@@ -1,10 +1,9 @@
 package com.category.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.List;
 
 @Entity
 @Table(name = "categories")
@@ -17,4 +16,7 @@ public class Category {
     @Column(length = 500)
     private String description;
     private String categoryImage;
+
+    @Transient
+    private List<Product> products;
 }

@@ -1,18 +1,14 @@
-package com.product.dtos;
+package com.category.entities;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
+
 import lombok.Data;
 
 import java.time.LocalDate;
 
 @Data
-public class ProductDto {
+public class Product {
     private String productId;
-    @NotEmpty
-    @Size(min = 5,max = 30)
     private String title;
-    @Size(min = 0,max = 500)
     private String description;
     private LocalDate date;
     private int quantity;
@@ -21,6 +17,5 @@ public class ProductDto {
     private boolean isLive;
     private boolean stock;
     private String productImage;
-
     private String categoryId;
 }

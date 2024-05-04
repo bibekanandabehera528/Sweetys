@@ -85,4 +85,16 @@ public class ProductController {
         logger.info("Uploading product image to: " + productId);
         return new ResponseEntity<>("Product image uploaded...", HttpStatus.OK);
     }
+
+    @PostMapping("/createProductWithCategory/{categoryId}")
+    public ResponseEntity<ProductDto> createProductWithCategory(@PathVariable String categoryId, @RequestBody@Valid ProductDto productDto) {
+        logger.info("Product created: " + productDto.getProductId() + " for category: "+ categoryId);
+        return new ResponseEntity<>(productService.createProductWithCategory(productDto,categoryId), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/getProductsWithCategoryId/{categoryId}")
+    public ResponseEntity<List<ProductDto>> getProductsWithCategoryId(@PathVariable String categoryId){
+        logger.info("Getting all products with category id: " + categoryId);
+        return new ResponseEntity<>(productService.getProductsWithCategoryId(categoryId),HttpStatus.OK);
+    }
 }

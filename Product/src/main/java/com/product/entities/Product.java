@@ -1,9 +1,6 @@
 package com.product.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -25,4 +22,7 @@ public class Product {
     private boolean isLive;
     private boolean stock;
     private String productImage;
+
+    @Column(name = "category_id")
+    private String categoryId;
 }

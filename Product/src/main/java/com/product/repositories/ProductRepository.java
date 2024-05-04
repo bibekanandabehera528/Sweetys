@@ -13,4 +13,7 @@ public interface ProductRepository extends JpaRepository<Product,String> {
 
     @Query(value = "select * from products where title like %:key%",nativeQuery = true)
     List<Product> getAllProductsByTitle(@Param("key") String key);
+
+    @Query(value = "select * from products where category_id =:categoryId",nativeQuery = true)
+    List<Product> getProductsWithCategoryId(@Param("categoryId") String categoryId);
 }

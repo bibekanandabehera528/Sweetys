@@ -1,6 +1,7 @@
 package com.product.services.impl;
 
 import com.product.dtos.ProductDto;
+import com.product.entities.Category;
 import com.product.entities.Product;
 import com.product.exceptions.ResourceNotFoundException;
 import com.product.repositories.ProductRepository;
@@ -11,27 +12,32 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
+    private final RestTemplate restTemplate;
     private final ModelMapper modelMapper;
 
     @Value("${product.image.path}")
     private String productImagePath;
 
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository, ModelMapper modelMapper) {
+    public ProductServiceImpl(ProductRepository productRepository, ModelMapper modelMapper, RestTemplate restTemplate) {
         this.productRepository = productRepository;
         this.modelMapper = modelMapper;
+        this.restTemplate = restTemplate;
     }
 
     @Override
@@ -122,4 +128,27 @@ public class ProductServiceImpl implements ProductService {
             ioException.printStackTrace();
         }
     }
+
+    @Override
+    public ProductDto createProductWithCategory(ProductDto productDto, String categoryId) {
+        productDto.setProductId(UUID.randomUUID().toString());
+        productDto.setDate(LocalDate.now());
+        Optional<Category> category =  Optional.ofNullable(restTemplate.getForEntity("http://localhost:8082/category/getCategoryById/"+categoryId, Category.class).getBody());
+        if(category.isPresent()) {
+            productDto.setCategoryId(category.get().getCategoryId());
+        }else{
+            throw new ResourceNotFoundException("Category not found with id: " + categoryId);
+        }
+        Product product = modelMapper.map(productDto, Product.class);
+        Product product1 = productRepository.save(product);
+        return modelMapper.map(product1, ProductDto.class);
+    }
+
+    @Override
+    public List<ProductDto> getProductsWithCategoryId(String categoryId) {
+        List<Product> products = productRepository.getProductsWithCategoryId(categoryId);
+        return products.stream().map(product -> modelMapper.map(product, ProductDto.class)).collect(Collectors.toList());
+    }
+
+
 }

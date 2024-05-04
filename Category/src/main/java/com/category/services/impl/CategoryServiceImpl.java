@@ -2,6 +2,7 @@ package com.category.services.impl;
 
 import com.category.dtos.CategoryDto;
 import com.category.entities.Category;
+import com.category.entities.Product;
 import com.category.exceptions.ResourceNotFoundException;
 import com.category.repositories.CategoryRepository;
 import com.category.services.CategoryService;
@@ -12,9 +13,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -23,13 +26,15 @@ import java.util.stream.Collectors;
 public class CategoryServiceImpl implements CategoryService {
     private final ModelMapper modelMapper;
     private final CategoryRepository categoryRepository;
+    private final RestTemplate restTemplate;
     @Value("${category.image.path}")
     private String categoryImagePath;
 
     @Autowired
-    public CategoryServiceImpl(ModelMapper modelMapper, CategoryRepository categoryRepository) {
+    public CategoryServiceImpl(ModelMapper modelMapper, CategoryRepository categoryRepository, RestTemplate restTemplate) {
         this.modelMapper = modelMapper;
         this.categoryRepository = categoryRepository;
+        this.restTemplate = restTemplate;
     }
 
     @Override
@@ -67,6 +72,8 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto getCategoryById(String categoryId) {
 
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category not found !!!"));
+        List<Product> products = restTemplate.getForObject("http://localhost:8083/product/getProductsWithCategoryId/"+categoryId, ArrayList.class);
+        category.setProducts(products);
         return modelMapper.map(category, CategoryDto.class);
     }
 

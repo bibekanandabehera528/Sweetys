@@ -11,8 +11,9 @@ import java.time.LocalDate;
 public class Product {
     @Id
     private String productId;
+    private String categoryId;
     @Column(length = 50)
-    private String title;
+    sprivate String title;
     @Column(length = 500)
     private String description;
     private LocalDate date;

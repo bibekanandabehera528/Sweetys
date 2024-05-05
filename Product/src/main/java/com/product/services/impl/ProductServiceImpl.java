@@ -130,14 +130,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto createProductWithCategory(ProductDto productDto, String categoryId) {
+    public ProductDto createProductWithCategory(ProductDto productDto) {
         productDto.setProductId(UUID.randomUUID().toString());
         productDto.setDate(LocalDate.now());
-        Optional<Category> category =  Optional.ofNullable(restTemplate.getForEntity("http://localhost:8082/category/getCategoryById/"+categoryId, Category.class).getBody());
+        Optional<Category> category =  Optional.ofNullable(restTemplate.getForEntity("http://localhost:8082/category/getCategoryById/"+productDto.getCategoryId(), Category.class).getBody());
         if(category.isPresent()) {
             productDto.setCategoryId(category.get().getCategoryId());
         }else{
-            throw new ResourceNotFoundException("Category not found with id: " + categoryId);
+            throw new ResourceNotFoundException("Category not found with id: " + productDto.getCategoryId());
         }
         Product product = modelMapper.map(productDto, Product.class);
         Product product1 = productRepository.save(product);

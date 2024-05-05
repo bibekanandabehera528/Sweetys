@@ -26,7 +26,7 @@ public interface ProductService {
 
     void uploadProductImage(String productId,MultipartFile productImage);
 
-    ProductDto createProductWithCategory(ProductDto productDto, String categoryId);
+    ProductDto createProductWithCategory(ProductDto productDto);
 
     List<ProductDto> getProductsWithCategoryId(String categoryId);
 }

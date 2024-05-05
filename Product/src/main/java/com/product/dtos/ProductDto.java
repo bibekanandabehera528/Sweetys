@@ -9,6 +9,7 @@ import java.time.LocalDate;
 @Data
 public class ProductDto {
     private String productId;
+    private String categoryId;
     @NotEmpty
     @Size(min = 5,max = 30)
     private String title;

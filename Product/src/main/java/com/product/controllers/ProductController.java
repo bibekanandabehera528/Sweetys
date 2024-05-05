@@ -89,7 +89,7 @@ public class ProductController {
     @PostMapping("/createProductWithCategory/{categoryId}")
     public ResponseEntity<ProductDto> createProductWithCategory(@PathVariable String categoryId, @RequestBody@Valid ProductDto productDto) {
         logger.info("Product created: " + productDto.getProductId() + " for category: "+ categoryId);
-        return new ResponseEntity<>(productService.createProductWithCategory(productDto,categoryId), HttpStatus.CREATED);
+        return new ResponseEntity<>(productService.createProductWithCategory(productDto), HttpStatus.CREATED);
     }
 
     @GetMapping("/getProductsWithCategoryId/{categoryId}")

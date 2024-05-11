@@ -13,7 +13,7 @@ public class Product {
     private String productId;
     private String categoryId;
     @Column(length = 50)
-    sprivate String title;
+    private String title;
     @Column(length = 500)
     private String description;
     private LocalDate date;
@@ -23,7 +23,4 @@ public class Product {
     private boolean isLive;
     private boolean stock;
     private String productImage;
-
-    @Column(name = "category_id")
-    private String categoryId;
 }

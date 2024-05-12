@@ -37,11 +37,13 @@ public class CartController {
     @DeleteMapping("/clearCart/{userId}")
     public ResponseEntity<?> clearCart(@PathVariable String userId){
         cartService.clearCart(userId);
+        logger.info("Cart cleared...");
         return new ResponseEntity<>("cart cleared...",HttpStatus.OK);
     }
 
     @GetMapping("/getCartByUser/{userId}")
     public ResponseEntity<CartDto> getCartByUser(@PathVariable String userId){
+        logger.info("Getting cart for user: " + userId);
         return new ResponseEntity<>(cartService.getCartByUser(userId),HttpStatus.OK);
     }
 }

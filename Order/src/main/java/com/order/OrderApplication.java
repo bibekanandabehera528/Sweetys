@@ -1,4 +1,4 @@
-package com.cart;
+package com.order;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
@@ -10,19 +10,20 @@ import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-public class CartApplication {
+public class OrderApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(CartApplication.class, args);
-	}
-	@Bean
-	@LoadBalanced
-	public RestTemplate restTemplate(){
-		return new RestTemplate();
+		SpringApplication.run(OrderApplication.class, args);
 	}
 
 	@Bean
 	public ModelMapper modelMapper(){
 		return new ModelMapper();
+	}
+
+	@Bean
+	@LoadBalanced
+	public RestTemplate restTemplate(){
+		return new RestTemplate();
 	}
 }

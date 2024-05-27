@@ -72,7 +72,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto getCategoryById(String categoryId) {
 
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category not found !!!"));
-        List<Product> products = restTemplate.getForObject("http://localhost:8083/product/getProductsWithCategoryId/"+categoryId, ArrayList.class);
+        List<Product> products = restTemplate.getForObject("http://PRODUCT-SERVICE/product/getProductsWithCategoryId/"+categoryId, ArrayList.class);
         category.setProducts(products);
         return modelMapper.map(category, CategoryDto.class);
     }

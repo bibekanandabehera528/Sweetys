@@ -13,4 +13,5 @@ public class CartDto {
     private String userId;
     private LocalDate createdAt;
     private List<CartItemsDto> cartItems = new ArrayList<>();
+    private int totalAmount;
 }

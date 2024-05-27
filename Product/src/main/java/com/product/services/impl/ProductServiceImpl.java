@@ -133,7 +133,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductDto createProductWithCategory(ProductDto productDto) {
         productDto.setProductId(UUID.randomUUID().toString());
         productDto.setDate(LocalDate.now());
-        Optional<Category> category =  Optional.ofNullable(restTemplate.getForEntity("http://localhost:8082/category/getCategoryById/"+productDto.getCategoryId(), Category.class).getBody());
+        Optional<Category> category =  Optional.ofNullable(restTemplate.getForEntity("http://CATEGORY-SERVICE/category/getCategoryById/"+productDto.getCategoryId(), Category.class).getBody());
         if(category.isPresent()) {
             productDto.setCategoryId(category.get().getCategoryId());
         }else{

@@ -40,9 +40,9 @@ public class CartServiceImpl implements CartService {
     public CartDto addItemToCart(String userId, AddItemToCartRequest request) {
         boolean cartItemUpdated = false;
 
-        Optional<User> user = Optional.ofNullable(restTemplate.getForObject("http://localhost:8081/user/getUserById/" + userId, User.class));
+        Optional<User> user = Optional.ofNullable(restTemplate.getForObject("http://USER-SERVICE/user/getUserById/" + userId, User.class));
         User user1 = user.orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        Optional<Product> product = Optional.ofNullable(restTemplate.getForObject("http://localhost:8083/product/getProductById/" + request.getProductId(), Product.class));
+        Optional<Product> product = Optional.ofNullable(restTemplate.getForObject("http://PRODUCT-SERVICE/product/getProductById/" + request.getProductId(), Product.class));
         Product product1 = product.orElseThrow(() -> new ResourceNotFoundException("Product not found !!!"));
         Optional<Cart> cart = Optional.ofNullable(cartRepository.getCartByUserId(userId));
         if (!cart.isPresent()) {
@@ -60,7 +60,7 @@ public class CartServiceImpl implements CartService {
         for (CartItems cartItems1 : cartItems) {
             if (cartItems1.getProductId().equals(request.getProductId())) {
                 cartItems1.setQuantities(request.getQuantity());
-                cartItems1.setTotalPrice(request.getQuantity() * product1.getPrice());
+                cartItems1.setTotalPrice(request.getQuantity() * product1.getDiscountedPrice());
                 cartItems1.setCart(finalcart);
                 cartItemsRepository.save(cartItems1);
                 cartItemUpdated = true;
@@ -71,11 +71,12 @@ public class CartServiceImpl implements CartService {
             CartItems newCartItem = new CartItems();
             newCartItem.setProductId(request.getProductId());
             newCartItem.setQuantities(request.getQuantity());
-            newCartItem.setTotalPrice(request.getQuantity() * product1.getPrice());
+            newCartItem.setTotalPrice(request.getQuantity() * product1.getDiscountedPrice());
             finalcart.getCartItems().add(newCartItem);
             newCartItem.setCart(finalcart);
             cartItemsRepository.save(newCartItem);
         }
+        finalcart.setTotalAmount(cartItemsRepository.findAll().stream().map(i -> i.getTotalPrice()).reduce(0,(a,b) -> a+b));
         return modelMapper.map(cartRepository.save(finalcart), CartDto.class);
     }
 
@@ -88,7 +89,7 @@ public class CartServiceImpl implements CartService {
     @Override
     @Transactional
     public void clearCart(String userId) {
-        Optional<User> user = Optional.ofNullable(restTemplate.getForObject("http://localhost:8081/user/getUserById/" + userId, User.class));
+        Optional<User> user = Optional.ofNullable(restTemplate.getForObject("http://USER-SERVICE/user/getUserById/" + userId, User.class));
         User user1 = user.orElseThrow(() -> new ResourceNotFoundException("User not found"));
         Optional<Cart> cart = Optional.ofNullable(cartRepository.getCartByUserId(userId));
         Cart cart1 = cart.orElseThrow(() -> new ResourceNotFoundException("Cart for the user not created yet..."));
@@ -98,7 +99,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartDto getCartByUser(String userId) {
-        Optional<User> user = Optional.ofNullable(restTemplate.getForObject("http://localhost:8081/user/getUserById/" + userId, User.class));
+        Optional<User> user = Optional.ofNullable(restTemplate.getForObject("http://USER-SERVICE/user/getUserById/" + userId, User.class));
         User user1 = user.orElseThrow(() -> new ResourceNotFoundException("User not found"));
         Optional<Cart> cart = Optional.ofNullable(cartRepository.getCartByUserId(userId));
         Cart cart1 = cart.orElseThrow(() -> new ResourceNotFoundException("Cart for the user not created yet..."));
